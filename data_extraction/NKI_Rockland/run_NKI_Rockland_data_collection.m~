@@ -47,7 +47,7 @@ end
 % knn neighbors
 num_nbrs = 5;
 [IDX_left, ~] = knnsearch(left_coord, left_coord, 'K', num_nbrs);
-%%{
+%{
 % run bfs 
 [ order_left, visited_left ] = bfs( IDX_left, left_coord, num_nbrs );
 
@@ -58,14 +58,14 @@ left_roi_ind = left_roi_ind(order_left, :);
 % knn neighbors
 num_nbrs = 5;
 [IDX_right, ~] = knnsearch(right_coord, right_coord, 'K', num_nbrs);
-%%{
+%{
 % run bfs
 [ order_right, visited_right ] = bfs( IDX_right, right_coord, num_nbrs );
 
 % change ordering
 right_roi_ind = right_roi_ind(order_right, :);
 %}
-order_roi = [right_roi_ind; left_roi_ind];
+order_roi = [];
 
 
 

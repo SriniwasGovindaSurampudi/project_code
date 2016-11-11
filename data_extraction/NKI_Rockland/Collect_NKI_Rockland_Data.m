@@ -1,4 +1,4 @@
-function [ sCall, fCall, data_names, ages, subj_com ] = Collect_NKI_Rockland_Data( path )
+function [ sCall, fCall, data_names, ages, subj_com ] = Collect_NKI_Rockland_Data( pth )
 %COLLECT_NKI_ROCKLAND_DATA Summary of this function goes here
 % usage:
 % [ all_Emp_SC,all_Emp_FC,data_names ] = Collect_NKI_Rockland_Data( path )
@@ -31,7 +31,7 @@ fCall = zeros(num_rois,num_rois,size(data_names,2));
 % center of masses
 subj_com = zeros(num_rois, 3, size(data_names, 2));
 
-data = dir(path);
+data = dir(pth);
 
 for subj_idx = 0 : 196
     % organize all subject specific file names
@@ -39,13 +39,13 @@ for subj_idx = 0 : 196
         data_names{j,subj_idx + 1} = data(8*subj_idx+j+3).name;
     end
     % collect SC - FC matrices
-    sCall(:,:,subj_idx+1) = dlmread(strcat(data_names{1,subj_idx+1}));
-    fCall(:,:,subj_idx+1) = dlmread(strcat(data_names{5,subj_idx+1}));
+    sCall(:,:,subj_idx+1) = dlmread(strcat(pth, data_names{1,subj_idx+1}));
+    fCall(:,:,subj_idx+1) = dlmread(strcat(pth, data_names{5,subj_idx+1}));
     % collect center of mass for all regions in the subject
-    subj_com(:, :, subj_idx + 1) = csvread(data_names{4, subj_idx + 1});
+    subj_com(:, :, subj_idx + 1) = csvread(strcat(pth, data_names{4, subj_idx + 1}));
 end
 
 % collect age information
-ages = dlmread(data(1580).name); % file with age list, may change with data sets.
+ages = dlmread(strcat(pth, data(1580).name)); % file with age list, may change with data sets.
 end
 

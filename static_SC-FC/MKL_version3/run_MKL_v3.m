@@ -3,12 +3,12 @@ clear
 clc
 %% data loading
 % load('/Users/govinda/Desktop/Project/data/dynamic_SC-FC/data_68_ROI/SC_FC_matrices.mat'); % 68 regions
-load('/Users/govinda/Desktop/Project/data/static_SC-FC/NKI_Rockland/mat files/SC_FC_94.mat'); % 94 regions
+load('/Users/govinda/Desktop/Project/data/static_SC-FC/NKI_Rockland/mat files/SC-FC_proper.mat'); % 188 regions
 %% parameters
 [~, n, num_subjs] = size(sCall);
 epsilon = 0.0;
 num_scls = 8;
-idx_lam = ceil(n * 1 / 40); 
+idx_lam = ceil(n * 1 / 100); 
 %{
 if n == 68, ceil(n / 40) = 2;
 and
@@ -57,4 +57,4 @@ colormap('jet'), colorbar
 title('\pi for fold 2')
 
 %% saving
-save('/Users/govinda/Desktop/Project/results/static SC-FC/MKL_version3/MKL_cross_validation_94_lam_1by40.mat')
+save('/Users/govinda/Desktop/Project/results/static SC-FC/MKL_version3/MKL_cross_validation_188_lam_1by100.mat')

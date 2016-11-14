@@ -65,7 +65,13 @@ num_nbrs = 5;
 % change ordering
 right_roi_ind = right_roi_ind(order_right, :);
 %}
+%% ordering all rois
 order_roi = [right_roi_ind; left_roi_ind];
+sCall = sCall(order_roi, order_roi, :);
+fCall = fCall(order_roi, order_roi, :);
+%% saving the data
+save('/Users/govinda/Desktop/Project/data/static_SC-FC/NKI_Rockland/mat files/SC-FC_proper', 'sCall', 'fCall');
+
 
 
 

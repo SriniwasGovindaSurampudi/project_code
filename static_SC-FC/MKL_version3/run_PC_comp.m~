@@ -1,0 +1,2 @@
+%% comparing 
+load('MKL_cross_validation_68_lam_1by40.mat');

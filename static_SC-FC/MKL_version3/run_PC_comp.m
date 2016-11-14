@@ -21,8 +21,8 @@ Hhat = copyAuthorsCode(sCall(:, :, random_indices(1 : fold / 2)),fCall(:, :, ran
 load('funcStructParameters.mat');
 figure('name', 'PC_comp_188')
 hold on
-plot((1 : fold), corr{1, 1}, 'g*-');
-plot((1 : fold), Cor.corCoef, 'ro-');
+plot((1 : fold / 2), corr{1, 1}(1 : fold / 2), 'g*-');
+plot((1 : fold / 2), Cor.corCoef, 'ro-');
 grid on
 title('Pearson correlation comparison, 188 rois')
 xlabel('Subjects'), ylabel('Pearson correlation')

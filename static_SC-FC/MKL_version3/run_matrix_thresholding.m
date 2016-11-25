@@ -1,0 +1,37 @@
+close all
+clear
+clc
+%% data loading
+load('/Users/govinda/Desktop/Project/results/static SC-FC/MKL_version3/MKL_cross_validation_68_lam_1by40.mat'); % 68 regions
+% load('/Users/govinda/Desktop/Project/results/static SC-FC/MKL_version3/MKL_cross_validation_188_lam_1by100.mat'); % 188 regions
+sc_avg = mean(sCall, 3);
+fc_avg = mean(fCall, 3);
+%% thresholding parameters
+[~, n, num_subjs] = size(sCall);
+num_thresh = 5;
+val_thresh = logspace(-8, -1, num_thresh); % percentage of edges thrown in non-zero edges [0, 1]
+nzs_sc = nonzeros(sc_avg);
+nzs_fc = nonzeros(fc_avg);
+%% thresholded matrices
+sc_avg_thresh = zeros(n, n, num_thresh);
+fc_avg_thresh = zeros(n, n, num_thresh);
+frac = zeros(2, num_thresh);
+for thresh_idx = 1 : num_thresh
+    sc = (sc_avg > val_thresh(1, thresh_idx)) .* sc_avg;
+    sc_avg_thresh(:, :, thresh_idx) = sc;
+    frac(1, thresh_idx) = size(nonzeros(sc_avg_thresh(:, :, thresh_idx)), 1) / (n * n);
+    
+    fc_avg_thresh(:, :, thresh_idx) = fc_avg;
+    frac(1, thresh_idx) = size(nonzeros(sc_avg_thresh(:, :, thresh_idx)), 1) / (n * n);
+    
+    subplot(5, 1,thresh_idx)
+    imagesc(sc), colormap('jet'), colorbar
+    title(['SC thresh = ', num2str(frac(1, thresh_idx))])
+end
+%% saving
+save('/Users/govinda/Desktop/Project/data/dynamic_SC-FC/data_68_ROI/thresholded matrices', 'sc_avg_thresh', 'fc_avg_thresh')
+%% comparing FC's
+[FC_pred_thresh, corr_thresh] = testing_version3(sc_avg_thresh, fc_avg_thresh, num_scls, pi{1, 1}, epsilon, idx_lam); % any pi{1, i} can be given
+
+f_thresh = figure('name', 'sc_thresh');
+plot(frac(1, :) * 100, corr_thresh, 'g-');

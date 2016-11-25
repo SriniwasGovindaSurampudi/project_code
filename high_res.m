@@ -3,8 +3,8 @@
 close all;
 lw=1.5 ;         %Default line width
 msz= 8;
-width=7;
-height=2.5;
+width=2.5;
+height=7;
 
 % The properties we've been using in the figures
 set(0,'defaultLineLineWidth',lw);   % set the default line width to lw

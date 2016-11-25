@@ -4,7 +4,7 @@ clear
 clc
 %% data
 lam_num = 40;
-load(['/Users/govinda/Desktop/Project/results/static SC-FC/MKL_version3/MKL_cross_validation_94_lam_1by', num2str(lam_num), '.mat']);
+load(['/Users/govinda/Desktop/Project/results/static SC-FC/MKL_version3/MKL_cross_validation_68_lam_1by', num2str(lam_num), '.mat']);
 %% initializations
 %{
 look in random_indices to decide on the subject,
@@ -68,24 +68,6 @@ for sub = (5 : 10 : 45)
     end
     
     %% plotting
-    %{
-    f_K_pi = figure('name', ['K_pi_1by40, ', num2str(idx1)]);
-    for i = 1 : num_scls
-        subplot(2, 5, i),
-        imagesc(K_pi(:, :, i)),
-        colormap('jet'), colorbar
-        title(['scale ', num2str(scls(i))])
-    end
-    subplot(2, 5, num_scls + 1),
-    imagesc(fc_p),
-    colormap('jet'), colorbar
-    title('FC pred')
-    subplot(2, 5, num_scls + 2),
-    imagesc(fc_e),
-    colormap('jet'), colorbar
-    title('FC emp')
-    %}
-    
     % subject specific correlations
     f_corr = figure('name', ['Kpi_corr, ', num2str(idx1)]);
     % fce vs ...
@@ -111,7 +93,7 @@ for sub = (5 : 10 : 45)
     title('PC for a subject with SC_{emp}')
     xlabel('scale'); ylabel('Pearson correlation');
     % axis([0, num_scls + 1, 0, 1])
-    pth = ['/Users/govinda/Desktop/Project/results/static SC-FC/MKL_version3/Kpi_fce_sce_corr/94_rois/lam_1by', num2str(lam_num), '/'];
+    pth = ['/Users/govinda/Desktop/Project/results/static SC-FC/MKL_version3/Kpi_fce_sce_corr/68_rois/lam_1by', num2str(lam_num), '/'];
     print([pth, 'MKL_v3_Kpi_fce_corr, ', num2str(idx1)] ,'-dpng','-r300');
 end
 %% correlation between \pi's 
@@ -119,17 +101,19 @@ end
 p1 = zeros(n, n, num_scls);
 p2 = zeros(n, n, num_scls);
 corr_p1_p2 = zeros(1, num_scls);
+std_dev_p1_p2 = zeros(1, num_scls);
 for i = 1 : num_scls
     p1(:, :, i) = pi{1, 1}(1 + (i - 1) * n : (i) * n, :);
     p2(:, :, i) = pi{1, 2}(1 + (i - 1) * n : (i) * n, :);
     c = corrcoef(p1(:, :, i), p2(:, :, 2));
-    corr_p1_p2(1, i) = c(1, 2);
+    corr_p1_p2(1, i)    = c(1, 2);
+    std_dev_p1_p2(1, i) = std(std(p1(:, :, i) - p2(:, :, i)));
 end
 
 f_pi_corr = figure('name', 'pi_corr');
-plot(corr_p1_p2, 'g*-');
+plot((num_scls : -1 : 1), corr_p1_p2, 'g*-');
 title('Pearson correlation between \pi for each fold')
-xlabel({'scale index';'lerge to small'}); ylabel('Pearson correlation');
+xlabel({'scale index';'small to large'}); ylabel('Pearson correlation');
 grid on
 print([pth, 'MKL_v3_p1_p2_corr'] ,'-dpng','-r300');
 
@@ -156,17 +140,25 @@ for i = 1 : num_scls
     colormap('jet'), colorbar
     title(['\pi_{2, indep}', num2str(i)])
 end
-%% average pi across folds then PC forall subjects
+%% average pi
+% run high_res with ht = 7 and wdt = 2.5
 pi_avg = (pi{1, 1} + pi{1, 2}) / 2;
-[FC_avg_pred, corr_avg] = testing_version3( sCall(:, :, random_indices), fCall(:, :, random_indices), num_scls, pi_avg, epsilon, idx_lam); 
+f_pi_avg = figure('name', 'pi_avg');
+imagesc(pi_avg)
+title('\pi_{avg}')
+colormap('jet')
+print([pth, 'pi_avg'], '-dpng','-r300');
+%% average pi across folds then PC forall subjects
+[FC_avg_pred, corr_avg] = testing_version3( sCall(:, :, random_indices(1 : fold)), fCall(:, :, random_indices(1 : fold)), num_scls, pi_avg, epsilon, idx_lam); 
 f_corr_avg = figure('name', 'corr_avg');
 hold on
+plot(1 : fold, [corr{1, 1}], 'ro-')
 plot(corr_avg, 'g*-')
-plot(1 : 2 * fold, [corr{1, 1}, corr{1, 2}], 'ro-')
 hold off
-legend({'\pi_{avg}', '\pi for each fold'})
+grid on
+legend({'\pi for each fold', '\pi_{avg}'})
 title({'Pearson correlation for all subjects';'average \pi across folds'})
 xlabel('Subjects'); ylabel('Pearson correlation');
-grid on
-axis([0, num_subjs + 1, 0, 1])
-pth = '/Users/govinda/Desktop/Project/results/static SC-FC/MKL_version3';
+axis([0, fold + 1, 0.45, 1.0])
+pth = '/Users/govinda/Desktop/Project/reports/paper_drafts/jneurosci/images/';
+print([pth, 'PC_avg_pi_68'], '-dpng','-r300')

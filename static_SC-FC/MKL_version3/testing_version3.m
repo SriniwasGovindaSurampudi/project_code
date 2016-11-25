@@ -1,4 +1,4 @@
-function [ FC_pred, corr ] = testing_version3( sCall, fCall, m, pi, epsilon, idx_lam )
+function [ FC_pred, corr ] = testing_version3( sCall, fCall, num_scls, pi, epsilon, idx_lam )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -17,7 +17,7 @@ for l = 1 : L
     MapC = (MapC > epsilon * max(MapC(:))) .* MapC;
     
     % heat kernels
-    K = Kernels_version3(MapC, m, idx_lam);
+    K = Kernels_version3(MapC, num_scls, idx_lam);
     
     % prediction
     FC_pred(:, :, l) = (K * pi);
